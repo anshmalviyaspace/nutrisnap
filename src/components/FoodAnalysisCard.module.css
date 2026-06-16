@@ -1,0 +1,198 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.identifiedLabel {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-green);
+  margin-bottom: 4px;
+}
+
+.description {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.confidenceBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 215, 64, 0.1);
+  border: 1px solid rgba(255, 215, 64, 0.3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--accent-yellow);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.calorieTotal {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.calNum {
+  font-size: var(--font-4xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.calLabel {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+}
+
+.macroRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  justify-content: space-around;
+}
+
+.macroItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.macroVal {
+  font-size: var(--font-lg);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.macroKey {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.proteinColor { color: #448aff; }
+.carbColor { color: #ffab40; }
+.fatColor { color: #ef5350; }
+.fiberColor { color: #66bb6a; }
+
+.macroDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+
+.sectionLabel {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+}
+
+.foodList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.foodItem {
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.foodItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.foodItemRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.foodDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.foodInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.foodName {
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.foodHindi {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  display: block;
+}
+
+.foodQty {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+}
+
+.foodRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.foodCal {
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+.foodCalLabel {
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+.microGrid {
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) calc(var(--space-sm) + 14px);
+  margin-top: var(--space-xs);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.mealTypeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}

@@ -1,0 +1,25 @@
+.page { min-height: 100dvh; background: var(--bg-primary); }
+
+.header { padding-top: var(--space-lg); margin-bottom: var(--space-lg); }
+
+.calendarCard { margin-bottom: var(--space-lg); }
+
+.daySection { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.dayTitle { font-size: var(--font-xl); font-weight: 700; color: var(--text-primary); }
+
+.daySummary { margin-bottom: var(--space-sm); }
+
+.summaryRow { display: flex; align-items: center; justify-content: space-around; padding: var(--space-sm) 0; }
+
+.summaryItem { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+.summaryVal { font-size: var(--font-xl); font-weight: 800; color: var(--text-primary); }
+.valGreen { color: var(--accent-green); }
+.valOrange { color: var(--accent-orange); }
+
+.summaryLabel { font-size: var(--font-xs); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.summaryDivider { width: 1px; height: 36px; background: var(--bg-glass-border); }
+
+.emptyDay { display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); padding: var(--space-xl); color: var(--text-tertiary); font-size: var(--font-sm); }

@@ -1,0 +1,47 @@
+.page { min-height: 100dvh; background: var(--bg-primary); }
+.header { padding-top: var(--space-lg); margin-bottom: var(--space-lg); }
+.section { margin-bottom: var(--space-md); }
+
+.userRow { display: flex; align-items: center; gap: var(--space-md); }
+.avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-glass); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; border: 2px solid var(--bg-glass-border); }
+.avatarImg { width: 100%; height: 100%; object-fit: cover; }
+.avatarEmoji { font-size: 28px; }
+.userName { font-size: var(--font-md); font-weight: 700; color: var(--text-primary); }
+.userEmail { font-size: var(--font-sm); color: var(--text-tertiary); }
+
+.goalInput { display: flex; flex-direction: column; gap: 4px; }
+.goalLabel { display: flex; align-items: center; justify-content: space-between; font-size: var(--font-sm); color: var(--text-secondary); }
+.goalUnit { font-weight: 700; color: var(--text-primary); }
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.06);
+  outline: none;
+  cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(108, 99, 255, 0.4);
+}
+
+.sliderRange { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-tertiary); }
+
+.macroCalc { font-size: var(--font-xs); color: var(--text-tertiary); text-align: center; margin-top: var(--space-sm); }
+
+.saveBtn { margin-top: var(--space-md); }
+
+.aboutRow { display: flex; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--bg-glass-border); }
+.aboutRow:last-child { border-bottom: none; }
+.aboutLabel { font-size: var(--font-sm); color: var(--text-secondary); }
+.aboutVal { font-size: var(--font-sm); font-weight: 600; color: var(--text-primary); }
+
+.logoutBtn { background: var(--accent-red-dim); color: var(--accent-red); border: 1px solid rgba(255, 82, 82, 0.3); margin-bottom: var(--space-xl); }
+.logoutBtn:hover { background: rgba(255, 82, 82, 0.2); }

@@ -1,0 +1,28 @@
+.page { min-height: 100dvh; background: var(--bg-primary); }
+.header { padding-top: var(--space-lg); margin-bottom: var(--space-lg); }
+
+.chartCard { margin-bottom: var(--space-md); }
+.chartHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); }
+.goalLine { font-size: var(--font-xs); color: rgba(108, 99, 255, 0.7); font-weight: 500; }
+
+.statsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-bottom: var(--space-md); }
+
+.statCard { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: var(--space-md); }
+.statIcon { font-size: 24px; }
+.statVal { font-size: var(--font-xl); font-weight: 800; color: var(--text-primary); line-height: 1; display: flex; align-items: baseline; gap: 2px; }
+.statUnit { font-size: var(--font-xs); font-weight: 400; color: var(--text-tertiary); }
+.statHighlight { color: var(--accent-green); }
+.statLabel { font-size: var(--font-xs); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.breakdownCard { margin-bottom: var(--space-md); }
+.breakdownList { display: flex; flex-direction: column; gap: var(--space-sm); margin-top: var(--space-md); }
+.breakdownRow { display: flex; align-items: center; gap: var(--space-md); }
+.breakdownDay { font-size: var(--font-xs); font-weight: 600; color: var(--text-tertiary); width: 28px; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+.breakdownBarWrap { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: var(--radius-full); overflow: hidden; }
+.breakdownBar { height: 100%; border-radius: var(--radius-full); transition: width 0.8s ease-out; min-width: 2px; }
+.breakdownVal { font-size: var(--font-xs); font-weight: 600; color: var(--text-secondary); width: 40px; text-align: right; flex-shrink: 0; }
+
+.tipCard { display: flex; align-items: flex-start; gap: var(--space-md); }
+.tipIcon { font-size: 28px; flex-shrink: 0; }
+.tipTitle { font-size: var(--font-sm); font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.tipText { font-size: var(--font-sm); color: var(--text-secondary); line-height: 1.5; }

@@ -1,0 +1,29 @@
+.scanItem {
+  position: relative;
+}
+
+.scanButton {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -28px;
+  box-shadow: 0 0 20px rgba(108, 99, 255, 0.4);
+  transition: all var(--transition-base);
+}
+
+.scanItem:hover .scanButton {
+  box-shadow: 0 0 30px rgba(108, 99, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.scanItem.active .scanButton {
+  box-shadow: 0 0 30px rgba(108, 99, 255, 0.6);
+}
+
+.scanButton svg {
+  color: white;
+}

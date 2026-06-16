@@ -1,0 +1,107 @@
+.container {
+  width: 100%;
+}
+
+.hiddenInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.captureButton {
+  width: 100%;
+  min-height: 260px;
+  background: var(--gradient-card);
+  border: 2px dashed rgba(108, 99, 255, 0.4);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.captureButton:hover {
+  border-color: rgba(108, 99, 255, 0.7);
+  background: rgba(108, 99, 255, 0.05);
+}
+
+.captureButton:active {
+  transform: scale(0.99);
+}
+
+.captureContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+}
+
+.cameraIcon {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-xl);
+  background: rgba(108, 99, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  animation: pulseScale 2s ease-in-out infinite;
+}
+
+@keyframes pulseScale {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.3); }
+  50% { transform: scale(1.03); box-shadow: 0 0 20px 8px rgba(108, 99, 255, 0.1); }
+}
+
+.captureLabel {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.captureHint {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  text-align: center;
+  max-width: 240px;
+}
+
+.compressingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+}
+
+.preview {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+
+.previewImage {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.previewOverlay {
+  position: absolute;
+  bottom: var(--space-md);
+  right: var(--space-md);
+}
+
+.retakeBtn {
+  padding: 10px 20px;
+  font-size: var(--font-sm);
+  backdrop-filter: blur(10px);
+}
