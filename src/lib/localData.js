@@ -61,6 +61,15 @@ export const deleteFoodLog = (id) => {
   localStorage.setItem('ft_logs', JSON.stringify(allLogs));
 };
 
+export const updateFoodLog = (id, updatedMeal) => {
+  if (typeof window === 'undefined') return;
+  const val = localStorage.getItem('ft_logs');
+  let allLogs = val ? JSON.parse(val) : [];
+  allLogs = allLogs.map(log => log.id === id ? { ...log, ...updatedMeal } : log);
+  localStorage.setItem('ft_logs', JSON.stringify(allLogs));
+  return updatedMeal;
+};
+
 export const getDailySummary = (dateStr) => {
   const logs = getFoodLogs(dateStr);
   const goals = getGoals();

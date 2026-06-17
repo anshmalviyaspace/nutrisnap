@@ -8,6 +8,7 @@ export default function RealtimeCamera({ onDetectFoods, scanning }) {
   const canvasRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(false);
   const [error, setError] = useState(null);
+  const [isCapturing, setIsCapturing] = useState(false);
 
   // Initialize camera
   useEffect(() => {
@@ -38,58 +39,52 @@ export default function RealtimeCamera({ onDetectFoods, scanning }) {
     };
   }, []);
 
-  // Frame capture loop
-  useEffect(() => {
-    if (!scanning || !hasPermission) return;
+  const handleManualScan = async () => {
+    if (!videoRef.current || !canvasRef.current || isCapturing) return;
+    setIsCapturing(true);
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      setIsCapturing(false);
+      return;
+    }
 
-    const captureFrame = async () => {
-      if (!videoRef.current || !canvasRef.current) return;
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      
-      // Ensure video is ready
-      if (video.videoWidth === 0 || video.videoHeight === 0) return;
+    const scale = Math.min(1, 1024 / Math.max(video.videoWidth, video.videoHeight));
+    canvas.width = video.videoWidth * scale;
+    canvas.height = video.videoHeight * scale;
+    
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Scale down image to save bandwidth (max 1024 width/height)
-      const scale = Math.min(1, 1024 / Math.max(video.videoWidth, video.videoHeight));
-      canvas.width = video.videoWidth * scale;
-      canvas.height = video.videoHeight * scale;
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+    
+    try {
+      const base64 = dataUrl.split(",")[1];
       
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      // Compress jpeg
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+      const res = await fetch("/api/scan-stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64, mimeType: "image/jpeg" }),
+      });
       
-      try {
-        const base64 = dataUrl.split(",")[1];
-        
-        const res = await fetch("/api/scan-stream", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: base64, mimeType: "image/jpeg" }),
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          if (data.foods && data.foods.length > 0) {
-            // Pass foods and the frame used to detect them
-            onDetectFoods(data.foods, { base64, mimeType: "image/jpeg", previewUrl: dataUrl });
-          }
+      if (res.ok) {
+        const data = await res.json();
+        if (data.foods && data.foods.length > 0) {
+          onDetectFoods(data.foods, { base64, mimeType: "image/jpeg", previewUrl: dataUrl });
         }
-      } catch (err) {
-        console.error("Frame analysis failed:", err);
+      } else {
+        if (res.status === 429) {
+           alert("Rate limit reached. Please wait a few seconds and try again.");
+        }
       }
-    };
-
-    const intervalId = setInterval(captureFrame, 3000);
-    const timeoutId = setTimeout(captureFrame, 1000); // Initial capture
-
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
-    };
-  }, [scanning, hasPermission, onDetectFoods]);
+    } catch (err) {
+      console.error("Frame analysis failed:", err);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -107,8 +102,14 @@ export default function RealtimeCamera({ onDetectFoods, scanning }) {
           <canvas ref={canvasRef} style={{ display: "none" }} />
           
           {scanning && (
-            <div className={styles.scannerOverlay}>
-               <div className={styles.scannerLine}></div>
+            <div className={styles.overlayControls}>
+              <button 
+                className={`btn btn-primary ${styles.scanBtn}`} 
+                onClick={handleManualScan}
+                disabled={isCapturing}
+              >
+                {isCapturing ? "Scanning..." : "Tap to Scan"}
+              </button>
             </div>
           )}
         </>
@@ -116,3 +117,4 @@ export default function RealtimeCamera({ onDetectFoods, scanning }) {
     </div>
   );
 }
+

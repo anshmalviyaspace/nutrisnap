@@ -261,3 +261,41 @@ export async function detectFoodRealtime(base64Image, mimeType = "image/jpeg") {
   return JSON.parse(text);
 }
 
+/**
+ * Edit a meal based on natural language instructions
+ * @param {object} originalMeal 
+ * @param {string} userPrompt 
+ * @returns {Promise<object>}
+ */
+export async function editMealWithAI(originalMeal, userPrompt) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `Here is a meal that was previously logged:
+${JSON.stringify(originalMeal, null, 2)}
+
+The user has requested the following edit/adjustment:
+"${userPrompt}"
+
+Please update the meal's food items, quantities, and recalculate the total calories and macros according to the user's instructions.
+Return the updated meal object in the exact same schema structure as the original.`
+          }
+        ],
+      },
+    ],
+    config: {
+      systemInstruction: SYSTEM_PROMPT,
+      responseMimeType: "application/json",
+      responseSchema: RESPONSE_SCHEMA,
+      temperature: 0.1,
+    },
+  });
+
+  const text = response.text;
+  return JSON.parse(text);
+}
+

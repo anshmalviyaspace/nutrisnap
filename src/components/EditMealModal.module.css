@@ -1,0 +1,135 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-md);
+}
+
+.modalContent {
+  background: var(--surface-light);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--bg-glass-border);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: 700;
+}
+
+.modalBody {
+  padding: var(--space-lg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.sectionTitle {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+  margin-top: 0;
+}
+
+.foodList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.foodItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bg-glass-border);
+}
+
+.foodName {
+  font-weight: 600;
+  font-size: var(--font-sm);
+  flex: 1;
+}
+
+.quantityInput {
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-glass-border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: var(--font-sm);
+  width: 120px;
+  text-align: right;
+}
+
+.quantityInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.hint {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-sm);
+}
+
+.aiInput {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+  resize: vertical;
+}
+
+.aiInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.modalFooter {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--bg-glass-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+.errorBanner {
+  background: var(--error-bg);
+  color: var(--error-text);
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  text-align: center;
+}

@@ -38,6 +38,10 @@ export default function DashboardPage() {
     fetchSummary();
   };
 
+  const handleMealUpdate = () => {
+    fetchSummary();
+  };
+
   const goals = summary?.goals || { calorie_goal: 2000, protein_goal: 100, carb_goal: 275, fat_goal: 55 };
   const consumed = summary?.total_calories || 0;
   const meals = summary?.meals || [];
@@ -144,7 +148,7 @@ export default function DashboardPage() {
               {sortedMeals.length > 0 ? (
                 <div className="stack">
                   {sortedMeals.map((meal) => (
-                    <MealCard key={meal.id} log={meal} onDelete={handleMealDelete} />
+                    <MealCard key={meal.id} log={meal} onDelete={handleMealDelete} onUpdate={handleMealUpdate} />
                   ))}
                 </div>
               ) : (
