@@ -37,8 +37,7 @@ export default function ScanPage() {
       
       for (const food of foods) {
         const exists = newFoods.find(
-          f => f.name.toLowerCase() === food.name.toLowerCase() || 
-               f.name_hindi?.toLowerCase() === food.name_hindi?.toLowerCase()
+          f => f.name.toLowerCase() === food.name.toLowerCase()
         );
         if (!exists) {
           newFoods.push(food);
