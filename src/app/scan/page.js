@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import CameraCapture from "@/components/CameraCapture";
+import RealtimeCamera from "@/components/RealtimeCamera";
 import FollowUpQuestions from "@/components/FollowUpQuestions";
 import FoodAnalysisCard from "@/components/FoodAnalysisCard";
 import BottomNav from "@/components/BottomNav";
@@ -10,7 +10,7 @@ import { saveFoodLog } from "@/lib/localData";
 import styles from "./scan.module.css";
 
 const STEPS = {
-  CAPTURE: "capture",
+  SCANNING: "scanning",
   ANALYZING: "analyzing",
   QUESTIONS: "questions",
   RESULT: "result",
@@ -19,14 +19,47 @@ const STEPS = {
 
 export default function ScanPage() {
   const router = useRouter();
-  const [step, setStep] = useState(STEPS.CAPTURE);
-  const [capturedImage, setCapturedImage] = useState(null);
+  const [step, setStep] = useState(STEPS.SCANNING);
+  
+  // Real-time tracking state
+  const [detectedFoods, setDetectedFoods] = useState([]);
+  const [bestFrame, setBestFrame] = useState(null); // The frame we will send for full analysis
+  
   const [analysis, setAnalysis] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const handleCapture = async ({ base64, mimeType, previewUrl }) => {
-    setCapturedImage({ base64, mimeType, previewUrl });
+  // Callback from RealtimeCamera
+  const handleDetectFoods = useCallback((foods, frame) => {
+    setDetectedFoods(prev => {
+      const newFoods = [...prev];
+      let addedNew = false;
+      
+      for (const food of foods) {
+        const exists = newFoods.find(
+          f => f.name.toLowerCase() === food.name.toLowerCase() || 
+               f.name_hindi?.toLowerCase() === food.name_hindi?.toLowerCase()
+        );
+        if (!exists) {
+          newFoods.push(food);
+          addedNew = true;
+        }
+      }
+      
+      if (addedNew) {
+        setBestFrame(frame);
+      }
+      
+      return newFoods;
+    });
+  }, []);
+
+  const handleCalculateNutrition = async () => {
+    if (!bestFrame) {
+      setError("Please wait for the AI to detect at least one food item.");
+      return;
+    }
+    
     setStep(STEPS.ANALYZING);
     setError(null);
 
@@ -34,22 +67,21 @@ export default function ScanPage() {
       const res = await fetch("/api/analyze-food", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: base64, mimeType }),
+        body: JSON.stringify({ image: bestFrame.base64, mimeType: bestFrame.mimeType }),
       });
 
       if (!res.ok) throw new Error("Analysis failed");
       const data = await res.json();
       setAnalysis(data);
 
-      // If there are follow-up questions, show them
       if (data.follow_up_questions?.length > 0) {
         setStep(STEPS.QUESTIONS);
       } else {
         setStep(STEPS.RESULT);
       }
     } catch (e) {
-      setError("Couldn't analyze the image. Please try again with a clearer photo.");
-      setStep(STEPS.CAPTURE);
+      setError("Couldn't analyze the food. Please try again.");
+      setStep(STEPS.SCANNING);
     }
   };
 
@@ -60,8 +92,8 @@ export default function ScanPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          image: capturedImage.base64,
-          mimeType: capturedImage.mimeType,
+          image: bestFrame.base64,
+          mimeType: bestFrame.mimeType,
           followUpAnswers: answers,
           originalAnalysis: analysis,
         }),
@@ -71,7 +103,6 @@ export default function ScanPage() {
       setAnalysis(data);
       setStep(STEPS.RESULT);
     } catch {
-      // On error, just go to result with original analysis
       setStep(STEPS.RESULT);
     }
   };
@@ -95,7 +126,7 @@ export default function ScanPage() {
         total_fiber_g: analysis.total_fiber_g,
         ai_confidence: analysis.confidence,
         meal_description: analysis.meal_description,
-        image_base64: capturedImage?.base64,
+        image_base64: bestFrame?.base64,
       });
 
       router.push("/dashboard");
@@ -106,10 +137,11 @@ export default function ScanPage() {
   };
 
   const handleRetake = () => {
-    setCapturedImage(null);
+    setDetectedFoods([]);
+    setBestFrame(null);
     setAnalysis(null);
     setError(null);
-    setStep(STEPS.CAPTURE);
+    setStep(STEPS.SCANNING);
   };
 
   return (
@@ -117,7 +149,7 @@ export default function ScanPage() {
       <div className="page-container">
         {/* Step header */}
         <div className={styles.header}>
-          {step !== STEPS.CAPTURE && (
+          {step !== STEPS.SCANNING && (
             <button className="btn btn-icon" onClick={handleRetake} id="back-btn">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="15 18 9 12 15 6" />
@@ -127,7 +159,7 @@ export default function ScanPage() {
           <div className={styles.headerCenter}>
             <h1 className={styles.title}>{getStepTitle(step)}</h1>
             <div className={styles.stepDots}>
-              {Object.values(STEPS).slice(0, 3).map((s, i) => (
+              {Object.values(STEPS).filter(s => s !== STEPS.SAVING).map((s, i) => (
                 <div
                   key={s}
                   className={`${styles.dot} ${isStepComplete(step, s) ? styles.dotActive : ""}`}
@@ -138,10 +170,10 @@ export default function ScanPage() {
           <div style={{ width: 48 }} />
         </div>
 
-        {/* Image preview strip (when analyzing/questions/result) */}
-        {capturedImage?.previewUrl && step !== STEPS.CAPTURE && (
+        {/* Image preview strip */}
+        {bestFrame?.previewUrl && step !== STEPS.SCANNING && (
           <div className={styles.previewStrip}>
-            <img src={capturedImage.previewUrl} alt="Your meal" className={styles.previewImg} />
+            <img src={bestFrame.previewUrl} alt="Your meal" className={styles.previewImg} />
           </div>
         )}
 
@@ -155,17 +187,37 @@ export default function ScanPage() {
 
         {/* Step content */}
         <div className={styles.content}>
-          {step === STEPS.CAPTURE && (
+          {step === STEPS.SCANNING && (
             <div className="slide-up">
-              <CameraCapture onCapture={handleCapture} />
-              <div className={styles.tips}>
-                <p className={styles.tipsTitle}>📸 Tips for best results</p>
-                <ul className={styles.tipsList}>
-                  <li>Place food in good lighting</li>
-                  <li>Show all items on the plate</li>
-                  <li>Take photo from above at ~45°</li>
-                  <li>Avoid heavy shadows or blur</li>
-                </ul>
+              <RealtimeCamera 
+                scanning={true} 
+                onDetectFoods={handleDetectFoods} 
+              />
+              
+              <div className={styles.liveDetectedList}>
+                <h3 className={styles.detectedTitle}>Detected Items ({detectedFoods.length})</h3>
+                {detectedFoods.length > 0 ? (
+                  <ul className={styles.detectedItems}>
+                    {detectedFoods.map((food, i) => (
+                      <li key={i} className={styles.detectedItem}>
+                        <span className={styles.foodName}>{food.name}</span>
+                        {food.name_hindi && <span className={styles.foodHindi}>{food.name_hindi}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className={styles.detectingHint}>Point camera at food...</p>
+                )}
+              </div>
+              
+              <div className={styles.actionContainer}>
+                <button 
+                  className="btn btn-primary w-full" 
+                  onClick={handleCalculateNutrition}
+                  disabled={detectedFoods.length === 0}
+                >
+                  Calculate Nutrition
+                </button>
               </div>
             </div>
           )}
@@ -178,12 +230,12 @@ export default function ScanPage() {
                 <div className={styles.ring3} />
                 <div className={styles.scanIcon}>🤖</div>
               </div>
-              <p className={styles.analyzingTitle}>Analyzing your meal…</p>
+              <p className={styles.analyzingTitle}>Calculating macros…</p>
               <p className={styles.analyzingText}>
-                AI is identifying Indian foods and calculating nutrition
+                Fetching detailed nutritional info for {detectedFoods.length} item(s)
               </p>
               <div className={styles.analyzingSteps}>
-                {["Detecting food items", "Estimating portions", "Calculating nutrition"].map((s, i) => (
+                {["Estimating portions", "Calculating nutrition"].map((s, i) => (
                   <div key={i} className={styles.analyzingStep}>
                     <div className={`${styles.stepSpinner} ${styles[`stepDelay${i}`]}`} />
                     <span>{s}</span>
@@ -221,7 +273,7 @@ export default function ScanPage() {
 
 function getStepTitle(step) {
   const titles = {
-    [STEPS.CAPTURE]: "Scan Meal",
+    [STEPS.SCANNING]: "Live Scan",
     [STEPS.ANALYZING]: "Analyzing",
     [STEPS.QUESTIONS]: "Quick Check",
     [STEPS.RESULT]: "Nutrition",
@@ -231,6 +283,7 @@ function getStepTitle(step) {
 }
 
 function isStepComplete(currentStep, checkStep) {
-  const order = [STEPS.CAPTURE, STEPS.QUESTIONS, STEPS.RESULT];
+  const order = [STEPS.SCANNING, STEPS.ANALYZING, STEPS.QUESTIONS, STEPS.RESULT, STEPS.SAVING];
   return order.indexOf(currentStep) >= order.indexOf(checkStep);
 }
+

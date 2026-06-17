@@ -193,3 +193,71 @@ Please RECALCULATE the nutritional information based on these clarifications. Be
   const text = response.text;
   return JSON.parse(text);
 }
+
+const REALTIME_SYSTEM_PROMPT = `You are a fast, real-time food identification AI specializing in Indian cuisine.
+Your task is to quickly scan the provided image frame and identify any visible food items.
+
+RULES:
+1. Identify food items visible in the image.
+2. Focus on speed and accuracy. 
+3. Provide the English name and Hindi/regional translation.
+4. Estimate rough quantity.
+5. Do NOT calculate calories or macros.
+6. Return ONLY valid JSON. No markdown.`;
+
+const REALTIME_RESPONSE_SCHEMA = {
+  type: "object",
+  properties: {
+    foods: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          name_hindi: { type: "string" },
+          quantity: { type: "string" },
+        },
+        required: ["name", "quantity"],
+      },
+    },
+  },
+  required: ["foods"],
+};
+
+/**
+ * Real-time food detection
+ * @param {string} base64Image 
+ * @param {string} mimeType 
+ * @returns {Promise<object>}
+ */
+export async function detectFoodRealtime(base64Image, mimeType = "image/jpeg") {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              mimeType: mimeType,
+              data: base64Image,
+            },
+          },
+          {
+            text: "What food is in this image?",
+          },
+        ],
+      },
+    ],
+    config: {
+      systemInstruction: REALTIME_SYSTEM_PROMPT,
+      responseMimeType: "application/json",
+      responseSchema: REALTIME_RESPONSE_SCHEMA,
+      temperature: 0.1,
+    },
+  });
+
+  const text = response.text;
+  return JSON.parse(text);
+}
+

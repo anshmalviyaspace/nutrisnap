@@ -219,3 +219,66 @@
 .stepDelay0 { animation-delay: 0s; }
 .stepDelay1 { animation-delay: 0.3s; }
 .stepDelay2 { animation-delay: 0.6s; }
+
+/* Live Detected List */
+.liveDetectedList {
+  margin-top: var(--space-md);
+  background: var(--bg-glass);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  min-height: 100px;
+}
+
+.detectedTitle {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  margin-top: 0;
+}
+
+.detectedItems {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: 0;
+  margin: 0;
+}
+
+.detectedItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+.foodName {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+}
+
+.foodHindi {
+  color: var(--text-secondary);
+  font-size: var(--font-xs);
+  background: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.detectingHint {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-style: italic;
+  text-align: center;
+  margin-top: var(--space-sm);
+}
+
+.actionContainer {
+  margin-top: var(--space-md);
+}
+
